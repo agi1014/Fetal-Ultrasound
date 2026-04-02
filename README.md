@@ -48,32 +48,40 @@ A lightweight architectural alternative optimized strictly for speed and deploym
 
 ## 4. Model Comparison Summary
 
-To assess the effectiveness of the proposed approach, **EfficientNet-B3** was compared with **MobileNetV3-Large**, a lightweight convolutional neural network designed for computational efficiency.
+To assess the effectiveness of the proposed approach, EfficientNet-B3 was compared with MobileNetV3-Large, a lightweight convolutional neural network designed for computational efficiency. MobileNetV3 achieved a test accuracy of 91.29% with a weighted F1-score of 0.9145, demonstrating strong performance with reduced model complexity. However, comparatively lower precision and recall were observed in challenging and heterogeneous classes. 
 
-| Metric | MobileNetV3-Large | EfficientNet-B3 | Advantage |
-| :--- | :--- | :--- | :--- |
-| **Accuracy** | 91.29% | **93.15%** | EfficientNet-B3 (+1.86%) |
-| **Weighted F1-Score** | 0.9145 | **0.9680** | EfficientNet-B3 (+0.0535) |
+In contrast, EfficientNet-B3 achieved a higher test accuracy of 93.15% and a weighted F1-score of 0.9680, indicating improved class-wise balance and robustness. The performance gains can be attributed to EfficientNet’s compound scaling strategy, which enables more effective feature extraction across varying anatomical structures. 
 
-*   **MobileNetV3-Large** achieved a strong test accuracy of 91.29% with a weighted F1-score of 0.9145, demonstrating robust performance given its significantly reduced model complexity. However, it exhibited comparatively lower precision and recall in more challenging and heterogeneous classes like the fetal abdomen and thorax.
-*   **EfficientNet-B3**, by contrast, achieved a higher test accuracy of 93.15% and a weighted F1-score of 0.9680. This improvement comes from enhanced class-wise balance and robustness, primarily attributed to EfficientNet’s compound scaling strategy enabling more effective feature extraction across varying anatomical structures.
+Overall, while MobileNetV3 provides an efficient baseline, EfficientNet-B3 demonstrates superior performance, making it more suitable for accurate fetal ultrasound plane classification.
 
-**Conclusion**: While MobileNetV3 provides an excellent, computationally efficient baseline suited for edge deployment, EfficientNet-B3 demonstrates superior performance, making it the recommended architecture for scenarios where accurate fetal ultrasound plane classification is the primary objective and compute resources are not strictly constrained.
+### Performance Improvements
+Below is the visual comparison showcasing the direct improvement of the EfficientNet-B3 model.
 
----
+![Improvement of EfficientNet-B3 over MobileNetV3](B3_Visualizations/visualization_7.png)
 
-## 5. Visual Representations
-
-**Confusion Matrices & Validation Performance**
-Confusion Matrices and Validation Curves were generated to demonstrate performance stability and the precise detection levels between EfficientNet-B3 and MobileNetV3-Large.
-
-Model Metrics Output (Note: Refer to the included `B3_Visualizations` and `mobilenetv3_outputs` directories for high-res outputs).
+### Model Confusion Matrices
+*The confusion matrices further make the model boundary comparisons evident, underscoring exactly where EfficientNet improves robustness across heterogeneous classes.*
 
 **EfficientNet-B3 Matrix**  
 ![EfficientNet-B3 Confusion Matrix](B3_Visualizations/visualization_4.png)  
 
 **MobileNetV3-Large Matrix**  
 ![MobileNetV3 Confusion Matrix](mobilenetv3_outputs/confusion_matrix.png)
+
+---
+
+## 5. Visual Representations
+
+**Validation Performance Curves**
+Validation Curves were generated to demonstrate performance progression and stability across epochs.
+
+Model Metrics Output (Note: Refer to the included `B3_Visualizations` and `mobilenetv3_outputs` directories for detailed outputs).
+
+**EfficientNet-B3 Curves**  
+![EfficientNet-B3 Training Curves](B3_Visualizations/visualization_3.png)  
+
+**MobileNetV3-Large Curves**  
+![MobileNetV3 Training Curves](mobilenetv3_outputs/training_curves.png)
 
 **Model Interpretability Output (Grad-CAM)**
 Visual interpretation analysis revealed that the models are indeed centering on the targeted anatomic markers (such as the fetal brain ridge or the femur shaft) to build confidence in predictions, confirming they are not memorizing generic ultrasound scatter noise.
