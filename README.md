@@ -12,9 +12,24 @@ This repository documents the entire process: starting from a high-accuracy base
 ## 2. Dataset Description & Identified Challenges
 
 **Dataset Overview**
-*   **Source**: [Zenodo FETAL_PLANES_DB](https://zenodo.org/records/3904280)
+*   **Source**: [Zenodo FETAL_PLANES_DB](https://zenodo.org/records/3904280) - A comprehensive fetal ultrasound dataset from Zenodo.
 *   **Task**: Fetal ultrasound image classification across 6 anatomical planes.
-*   **Classes**: Fetal brain, Fetal abdomen, Fetal femur, Fetal thorax, Maternal cervix, Other.
+*   **Overall Size**: Raw CSV rows: 12,400. ✅ Filtered to 12,400 samples across 6 classes.
+
+**Class Distribution:**
+| Plane | Image Count |
+| :--- | :--- |
+| Other | 4213 |
+| Fetal brain | 3092 |
+| Fetal thorax | 1718 |
+| Maternal cervix | 1626 |
+| Fetal femur | 1040 |
+| Fetal abdomen | 711 |
+
+![Dataset Class Distribution](./B3_Visualizations/visualization_1.png)
+
+**Sample Ultrasound Images**
+![Dataset Sample Images Grid](./B3_Visualizations/visualization_2.png)
 
 **Identified Challenges & Data Quality**
 During the initial Data Challenges Visualization step, the dataset highlighted extreme class imbalance across its targets. To combat this, several techniques were implemented:
@@ -30,7 +45,7 @@ During the initial Data Challenges Visualization step, the dataset highlighted e
 The baseline model leverages the Compound Scaling architecture of EfficientNet-B3.
 
 **EfficientNet-B3 Architecture Reference**
-![EfficientNet-B3 Architecture](B3_Visualizations/visualization_9.png)
+![EfficientNet-B3 Architecture](./B3_Visualizations/visualization_9.png)
 
 *   **Input**: Normalized `300x300` resolution.
 *   **Classifier**: Replaced the standard block with a custom dense structure: `Dropout(0.4) -> Linear(512) -> SiLU -> Dropout(0.2) -> Linear(6)`.
@@ -57,16 +72,16 @@ Overall, while MobileNetV3 provides an efficient baseline, EfficientNet-B3 demon
 ### Performance Improvements
 Below is the visual comparison showcasing the direct improvement of the EfficientNet-B3 model.
 
-![Improvement of EfficientNet-B3 over MobileNetV3](B3_Visualizations/visualization_7.png)
+![Improvement of EfficientNet-B3 over MobileNetV3](./B3_Visualizations/visualization_7.png)
 
 ### Model Confusion Matrices
 *The confusion matrices further make the model boundary comparisons evident, underscoring exactly where EfficientNet improves robustness across heterogeneous classes.*
 
 **EfficientNet-B3 Matrix**  
-![EfficientNet-B3 Confusion Matrix](B3_Visualizations/visualization_4.png)  
+![EfficientNet-B3 Confusion Matrix](./B3_Visualizations/visualization_4.png)  
 
 **MobileNetV3-Large Matrix**  
-![MobileNetV3 Confusion Matrix](mobilenetv3_outputs/confusion_matrix.png)
+![MobileNetV3 Confusion Matrix](./mobilenetv3_outputs/confusion_matrix.png)
 
 ---
 
@@ -78,19 +93,22 @@ Validation Curves were generated to demonstrate performance progression and stab
 Model Metrics Output (Note: Refer to the included `B3_Visualizations` and `mobilenetv3_outputs` directories for detailed outputs).
 
 **EfficientNet-B3 Curves**  
-![EfficientNet-B3 Training Curves](B3_Visualizations/visualization_3.png)  
+![EfficientNet-B3 Training Curves](./B3_Visualizations/visualization_3.png)  
 
 **MobileNetV3-Large Curves**  
-![MobileNetV3 Training Curves](mobilenetv3_outputs/training_curves.png)
+![MobileNetV3 Training Curves](./mobilenetv3_outputs/training_curves.png)
+
+**EfficientNet-B3 Fine-Tuning Validation Impact**  
+![EfficientNet-B3 Fine-Tuning Performance](./B3_Visualizations/visualization_5.png)  
 
 **Model Interpretability Output (Grad-CAM)**
 Visual interpretation analysis revealed that the models are indeed centering on the targeted anatomic markers (such as the fetal brain ridge or the femur shaft) to build confidence in predictions, confirming they are not memorizing generic ultrasound scatter noise.
 
 **EfficientNet-B3 Saliency**  
-![EfficientNet-B3 Grad-CAM](B3_Visualizations/visualization_6.png)  
+![EfficientNet-B3 Grad-CAM](./B3_Visualizations/visualization_6.png)  
 
 **MobileNetV3-Large Saliency**  
-![MobileNetV3 Grad-CAM](mobilenetv3_outputs/gradcam.png)
+![MobileNetV3 Grad-CAM](./mobilenetv3_outputs/gradcam.png)
 
 ---
 
