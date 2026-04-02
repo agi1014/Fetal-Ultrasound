@@ -72,7 +72,8 @@ Overall, while MobileNetV3 provides an efficient baseline, EfficientNet-B3 demon
 ### Performance Improvements
 Below is the visual comparison showcasing the direct improvement of the EfficientNet-B3 model.
 
-![Improvement of EfficientNet-B3 over MobileNetV3](./B3_Visualizations/visualization_7.png)
+<img width="584" height="420" alt="Screenshot 2026-04-02 095120" src="https://github.com/user-attachments/assets/a4eac5de-00e4-48ce-8333-b4a4936e91d1" />
+
 
 ### Model Confusion Matrices
 *The confusion matrices further make the model boundary comparisons evident, underscoring exactly where EfficientNet improves robustness across heterogeneous classes.*
