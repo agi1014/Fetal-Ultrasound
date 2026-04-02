@@ -35,24 +35,81 @@ A lightweight architectural alternative optimized strictly for speed and deploym
 
 ---
 
-## Evaluation & Interpretability (Outputs)
-Both notebooks automatically process and export detailed visual and statistical proofs into their respective `_outputs` directories:
+## Model Comparison
+
+To assess the effectiveness of the proposed approach, **EfficientNet-B3** was compared with **MobileNetV3-Large**, a lightweight convolutional neural network designed for computational efficiency.
+
+| Metric | MobileNetV3-Large | EfficientNet-B3 | Advantage |
+| :--- | :--- | :--- | :--- |
+| **Accuracy** | 91.29% | **93.15%** | EfficientNet-B3 (+1.86%) |
+| **Weighted F1-Score** | 0.9145 | **0.9680** | EfficientNet-B3 (+0.0535) |
+
+*   **MobileNetV3-Large** achieved a strong test accuracy of 91.29% with a weighted F1-score of 0.9145, demonstrating robust performance given its significantly reduced model complexity. However, it exhibited comparatively lower precision and recall in more challenging and heterogeneous classes like the fetal abdomen and thorax.
+*   **EfficientNet-B3**, by contrast, achieved a higher test accuracy of 93.15% and a weighted F1-score of 0.9680. This improvement comes from enhanced class-wise balance and robustness, primarily attributed to EfficientNet’s compound scaling strategy enabling more effective feature extraction across varying anatomical structures.
+
+**Conclusion**: While MobileNetV3 provides an excellent, computationally efficient baseline suited for edge deployment, EfficientNet-B3 demonstrates superior performance, making it the recommended architecture for scenarios where accurate fetal ultrasound plane classification is the primary objective and compute resources are not strictly constrained.
+
+---
+
+## Visual Representations
+
+### 1. Training & Validation Curves
+*Comparison of the learning progression across epochs.*
+
+**EfficientNet-B3 Performance**  
+![EfficientNet-B3 Training Curves](B3_Visualizations/visualization_3.png)  
+
+**MobileNetV3-Large Performance**  
+![MobileNetV3 Training Curves](mobilenetv3_outputs/training_curves.png)
+
+### 2. Confusion Matrices
+*Detailed breakdown of misclassification patterns.*
+
+**EfficientNet-B3 Matrix**  
+![EfficientNet-B3 Confusion Matrix](B3_Visualizations/visualization_4.png)  
+
+**MobileNetV3-Large Matrix**  
+![MobileNetV3 Confusion Matrix](mobilenetv3_outputs/confusion_matrix.png)
+
+### 3. Interpretability (Grad-CAM Saliency)
+*Class Activation Maps confirming the models are detecting relevant anatomical features rather than artifacts.*
+
+**EfficientNet-B3 Saliency**  
+![EfficientNet-B3 Grad-CAM](B3_Visualizations/visualization_6.png)  
+
+**MobileNetV3-Large Saliency**  
+![MobileNetV3 Grad-CAM](mobilenetv3_outputs/gradcam.png)
+
+---
+
+## Evaluation & Interpretability Details
+Both notebooks automatically process and export detailed visual and statistical proofs into their respective output directories:
 
 ### 1. Classification Metrics
 Rather than relying purely on global accuracy, models are evaluated strictly on their `macro F1-scores` via precision-recall matrix tracking.
 
 ### 2. Saliency Maps (Grad-CAM)
-Because medical imaging classifications require robust interpretability, both pipelines dynamically inject backward hooks into their concluding Conv Blocks (e.g. `layer4[-1]` or `features[-1]`). 
-*   **Outputs**: Generates Class Activation Maps overlaying original ultrasounds to visually prove where the CNN is "looking" when isolating anatomic markers (e.g. the brain ridge vs the femur shaft).
+Because medical imaging classifications require robust interpretability, both pipelines dynamically inject backward hooks into their concluding Conv Blocks.
+*   **Outputs**: Generates Class Activation Maps overlaying original ultrasounds to visually prove where the CNN is "looking" when isolating anatomic markers (e.g., the brain ridge vs the femur shaft).
 *   **Function**: Confirms that the model isn't memorizing irrelevant noise or artifacts.
-
-### 3. Row-Normalized Confusion Matrices
-Used to highlight exact misclassification leakage patterns between confusing boundaries (like Maternal Cervix vs Other).
 
 ---
 
 ## Usage
-These scripts are optimized to be dropped specifically into **Google Colab (T4 GPU)**.
-1. Upload notebooks to Colab.
-2. Select the T4 Compute Engine.
-3. Automatically downloads data internally, extracts, trains, predicts, and auto-zips the outputs back to your browser.
+
+These scripts are optimized to be dropped specifically into **Google Colab (T4 GPU)** or run locally with a CUDA-enabled GPU.
+
+### Running on Google Colab (Recommended)
+1. Upload the specific notebook (`EfficientNetB3_Baseline.ipynb` or `MobileNetV3_Comparison.ipynb`) to Google Colab.
+2. In the top menu, click **Runtime** > **Change runtime type**.
+3. Set the **Hardware accelerator** to **T4 GPU** and click Save.
+4. Run all cells (`Ctrl+F9`). 
+   * The notebook will automatically download the Zenodo dataset, extract the files, structure the data loaders, train the model, evaluate the metrics, generate the visualizations, and zip the output files for easy downloading.
+
+### Running Locally
+1. Ensure you have Python 3.8+ installed along with PyTorch configured for your specific local CUDA version.
+2. Install the required dependencies:
+   ```bash
+   pip install torch torchvision numpy pandas matplotlib seaborn tqdm scikit-learn opencv-python imgaug
+   ```
+3. Run the complete notebook or run standard python translation scripts. Outputs will be placed in adjacent generated `/B3_Visualizations` and `/mobilenetv3_outputs` directories.
