@@ -2,40 +2,51 @@
 
 An advanced, end-to-end deep learning pipeline built to classify fetal ultrasound images across six distinct planes, focusing on real-world medical imaging challenges such as dataset imbalance, model interpretability, and architectural comparison.
 
-## Project Overview
-The objective of this project is to accurately determine the anatomical plane of fetal ultrasound images. We utilized the publicly available **Fetal Planes DB (Zenodo)**, aiming to achieve high generalization leveraging modern Convolutional Neural Networks (CNNs). 
+## 1. Project Overview & Objectives
+The primary objective of this project is to accurately determine the anatomical plane of fetal ultrasound images by building a robust deep learning pipeline. We utilized the publicly available **Fetal Planes DB (Zenodo)**, aiming to achieve high generalization utilizing modern Convolutional Neural Networks (CNNs). 
 
 This repository documents the entire process: starting from a high-accuracy baseline using **EfficientNet-B3**, and introducing a strict structural comparison against **MobileNetV3-Large** to evaluate tradeoffs between parameter efficiency, speed, and accuracy on a restricted edge-like compute budget.
 
 ---
 
-## Dataset & Preprocessing 
-The dataset features extreme class imbalance across its six targets. To combat this, several techniques were implemented:
+## 2. Dataset Description & Identified Challenges
+
+**Dataset Overview**
+*   **Source**: [Zenodo FETAL_PLANES_DB](https://zenodo.org/records/3904280)
+*   **Task**: Fetal ultrasound image classification across 6 anatomical planes.
+*   **Classes**: Fetal brain, Fetal abdomen, Fetal femur, Fetal thorax, Maternal cervix, Other.
+
+**Identified Challenges & Data Quality**
+During the initial Data Challenges Visualization step, the dataset highlighted extreme class imbalance across its targets. To combat this, several techniques were implemented:
 *   **Stratified Splitting**: Guaranteeing the exact label distributions across Training, Validation, and Held-Out Test sets.
 *   **Weighted Random Sampling**: Over-sampling the minority classes (like `Fetal femur` and `Fetal thorax`) dynamically during the DataLoader loops to prevent the CNN from collapsing into a majority-class predictor.
 *   **Heavy Augmentation Pipeline**: `RandomRotation`, `ColorJitter`, `RandomCrop`, and Multi-Axis Flipping to build resilience against ultrasound noise, artifact variance, and probe orientation.
 
 ---
 
-## Architectural Implementations
+## 3. Model Architecture & Approach
 
-### Model 1: EfficientNet-B3 (Baseline)
+### Baseline: EfficientNet-B3
 The baseline model leverages the Compound Scaling architecture of EfficientNet-B3.
+
+**EfficientNet-B3 Architecture Reference**
+![EfficientNet-B3 Architecture](B3_Visualizations/visualization_9.png)
+
 *   **Input**: Normalized `300x300` resolution.
 *   **Classifier**: Replaced the standard block with a custom dense structure: `Dropout(0.4) -> Linear(512) -> SiLU -> Dropout(0.2) -> Linear(6)`.
 *   **Training Strategy**: 
     1.  **Phase 1 (Head-Tuning)**: Backbone structurally frozen; learning entirely on the dense classifier block with Cosine Annealing.
     2.  **Phase 2 (Progressive Unfreezing)**: Selected Deep Convolutional Blocks unfrozen at Epoch 8 with a 10x learning rate reduction to refine high-level fetal features without breaking ImageNet pre-training context.
 
-### Model 2: MobileNetV3-Large (Comparison)
+### Lightweight Comparison: MobileNetV3-Large
 A lightweight architectural alternative optimized strictly for speed and deployment.
 *   **Input**: Normalized native `224x224` resolution.
-*   **Structure Alignment**: Stripped the internal default Sequential classifier and substituted it precisely with the Base Model's exact `SiLU/Dropout` classifier structure for a completely apples-to-apples assignment comparison.
+*   **Structure Alignment**: Stripped the internal default Sequential classifier and substituted it precisely with the Base Model's exact `SiLU/Dropout` classifier structure for a completely apples-to-apples comparison.
 *   **Unfreezing Strategy**: Only the final three Inverted Residual Blocks inside `backbone.features` were unlocked.
 
 ---
 
-## Model Comparison
+## 4. Model Comparison Summary
 
 To assess the effectiveness of the proposed approach, **EfficientNet-B3** was compared with **MobileNetV3-Large**, a lightweight convolutional neural network designed for computational efficiency.
 
@@ -51,19 +62,12 @@ To assess the effectiveness of the proposed approach, **EfficientNet-B3** was co
 
 ---
 
-## Visual Representations
+## 5. Visual Representations
 
-### 1. Training & Validation Curves
-*Comparison of the learning progression across epochs.*
+**Confusion Matrices & Validation Performance**
+Confusion Matrices and Validation Curves were generated to demonstrate performance stability and the precise detection levels between EfficientNet-B3 and MobileNetV3-Large.
 
-**EfficientNet-B3 Performance**  
-![EfficientNet-B3 Training Curves](B3_Visualizations/visualization_3.png)  
-
-**MobileNetV3-Large Performance**  
-![MobileNetV3 Training Curves](mobilenetv3_outputs/training_curves.png)
-
-### 2. Confusion Matrices
-*Detailed breakdown of misclassification patterns.*
+Model Metrics Output (Note: Refer to the included `B3_Visualizations` and `mobilenetv3_outputs` directories for high-res outputs).
 
 **EfficientNet-B3 Matrix**  
 ![EfficientNet-B3 Confusion Matrix](B3_Visualizations/visualization_4.png)  
@@ -71,8 +75,8 @@ To assess the effectiveness of the proposed approach, **EfficientNet-B3** was co
 **MobileNetV3-Large Matrix**  
 ![MobileNetV3 Confusion Matrix](mobilenetv3_outputs/confusion_matrix.png)
 
-### 3. Interpretability (Grad-CAM Saliency)
-*Class Activation Maps confirming the models are detecting relevant anatomical features rather than artifacts.*
+**Model Interpretability Output (Grad-CAM)**
+Visual interpretation analysis revealed that the models are indeed centering on the targeted anatomic markers (such as the fetal brain ridge or the femur shaft) to build confidence in predictions, confirming they are not memorizing generic ultrasound scatter noise.
 
 **EfficientNet-B3 Saliency**  
 ![EfficientNet-B3 Grad-CAM](B3_Visualizations/visualization_6.png)  
