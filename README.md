@@ -45,7 +45,7 @@ During the initial Data Challenges Visualization step, the dataset highlighted e
 The baseline model leverages the Compound Scaling architecture of EfficientNet-B3.
 
 **EfficientNet-B3 Architecture Reference**
-![EfficientNet-B3 Architecture](./B3_Visualizations/visualization_9.png)
+![EfficientNet-B3 Architecture](./B3_Visualizations/efficientnet_b3_architecture.png)
 
 *   **Input**: Normalized `300x300` resolution.
 *   **Classifier**: Replaced the standard block with a custom dense structure: `Dropout(0.4) -> Linear(512) -> SiLU -> Dropout(0.2) -> Linear(6)`.
